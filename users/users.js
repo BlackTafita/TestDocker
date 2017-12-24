@@ -1,10 +1,24 @@
-var express = require('express');
-var app = express();
+const express = require('express');
+const mongoose = require('mongoose');
+const userModel = require('./user');
 
-app.get('/', function (req, res) {
-    res.send('Hello World!');
+const app = express();
+
+mongoose.connect('mongodb://db:27017/docker', {useMongoClient: true}, (err, res) => {
+    console.log(err);
 });
 
-app.listen(3000, function () {
-    console.log('Example app listening on port 3000!');
+app.get('/', (req, res) => {
+    res.send('Run Users Container');
 });
+
+app.get('/set', (req, res) => {
+    userModel.create({
+        email: 'test',
+        pass: 'test'
+    }, (err, data) => {
+        res.send(data);
+    });
+});
+
+app.listen(4000);

@@ -1,7 +1,26 @@
 version: '3'
 services:
-  web:
-      build:
-        context: ./
-        dockerfile: ./products/Dockerfile
-      ports: ['3000']
+  products:
+       build:
+         context: ./
+         dockerfile: ./products/Dockerfile
+       depends_on:
+         - db
+       links:
+         - db
+       ports: ['3000:3000']
+  users:
+      image: node:latest
+      volumes:
+        - ./users:/usr/app
+        - ./node_modules:/usr/app/node_modules
+      ports: ['3000:4000']
+      working_dir: /usr/app
+      depends_on:
+        - db
+      links:
+        - db
+      command: node users.js
+  db:
+    image: mongo:latest
+    ports: ['27017:27017']

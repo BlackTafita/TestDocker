@@ -1,15 +1,22 @@
-FROM node:latest
+FROM node:carbon
 
-RUN mkdir /app
+# Create app directory
+WORKDIR /usr/src/app
 
-COPY package.json  /app
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
+COPY package*.json ./
 
-COPY ./products /app
+# If you are building your code for production
+# RUN npm install --only=production
 
-WORKDIR /app
+# Bundle app source
+COPY ./products ./
 
 RUN npm install
+RUN ls
+RUN pwd
+EXPOSE 8080
 
-EXPOSE 3000
-
-CMD ["npm", "run", "start-products"]
+CMD [ "node", "products.js"]
